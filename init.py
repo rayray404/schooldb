@@ -8,7 +8,7 @@ with open("./misc/db_names.txt") as db_names_file:
     db_names = db_names_file.readlines()
 
 def file_to_db(*db):
-    os.system(f"mysqldump -u {sql_acc_dict["host"]} -p test > ./db/test.sql")
+    os.system(f"mysql -u {sql_acc_dict["host"]} -p test < ./db/test.sql")
 # file_to_db()
 
 

@@ -1,6 +1,18 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 import os
+from wtforms import Form, BooleanField, StringField, PasswordField, validators
+import db_main
+
+class RegistrationForm(Form):
+    username = StringField('Username', [validators.Length(min=4, max=25)])
+    email = StringField('Email Address', [validators.Length(min=6, max=35)])
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+    accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
 
 app = Flask(__name__, static_folder='static')
 # UPLOAD_FOLDER = 'uploads'
@@ -28,6 +40,22 @@ def times():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route('/student')
+def student():
+    return render_template('student.html')
+
+@app.route('/teacher')
+def teacher():
+    return render_template('teacher.html')
+
+@app.route('/admin-login', methods=['GET', 'POST'])
+def admin_login():
+    form_data = {"id": request.form.get('id'), "password": request.form.get('password')}
+    if db_main.verify_admin(form_data):
+        print("aa")
+        redirect(url_for("/"))
+    return render_template('admin_login.html')
 
 
 # @app.route('/upload', methods=['POST'])
