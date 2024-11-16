@@ -1,6 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    <style>
+        table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+    
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+    
+        th {
+            background-color: #404040;
+            color: white;
+        }
+    
+        td {
+            background-color: #f9f9f9;
+        }
+    
+        tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+    
+        .total {
+            font-weight: bold;
+            background-color: #e8e8e8;
+        }
+    
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>    
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,21 +62,21 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/image-upload">Image-Based</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Prompt-Based</a>
-                </li>
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Links</a>
+                        aria-haspopup="true" aria-expanded="false">About</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <a class="dropdown-item" href="https://github.com/rayray404/schooldb">GitHub</a>
-                        <p class="dropdown-item">Creators</p>
-                        <a class="dropdown-item" href="https://github.com/rayray404">Rayhan</a>
-                        <a class="dropdown-item" href="https://github.com/kapuuuu/">Kapil</a>
+                        <a class="dropdown-item" href="/about">School Information</a>
+                        <a class="dropdown-item" href="/times">Opening and Closing Times</a>
+                        <a class="dropdown-item" href="/fees">Fees and Funding</a>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact" id="dropdown01">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Coming Soon!</a>
                 </li>
             </ul>
         </div>

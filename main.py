@@ -13,6 +13,22 @@ app = Flask(__name__, static_folder='static')
 def index():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/fees')
+def fees():
+    return render_template('fees.html')
+
+@app.route('/times')
+def times():
+    return render_template('times.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
 
 # @app.route('/upload', methods=['POST'])
 # def upload_file():
