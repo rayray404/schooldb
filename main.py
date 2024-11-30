@@ -1,28 +1,25 @@
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_session import Session
 import os
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
-import db_main
+import pickle
+import sqlite3
 
-class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=25)])
-    email = StringField('Email Address', [validators.Length(min=6, max=35)])
-    password = PasswordField('New Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
+
+
+
 
 app = Flask(__name__, static_folder='static')
-# UPLOAD_FOLDER = 'uploads'
-# if not os.path.exists(UPLOAD_FOLDER):
-#     os.makedirs(UPLOAD_FOLDER)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config['STATIC_FOLDER']="./static"
+Session(app)
 
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def index():
+    if not session.get("admin"):
+        session["admin"]=True
     return render_template('index.html')
 
 @app.route('/about')
@@ -49,34 +46,81 @@ def student():
 def teacher():
     return render_template('teacher.html')
 
-@app.route('/admin-login', methods=['GET', 'POST'])
-def admin_login():
-    form_data = {"id": request.form.get('id'), "password": request.form.get('password')}
-    if db_main.verify_admin(form_data):
-        print("aa")
-        redirect(url_for("/"))
-    return render_template('admin_login.html')
+@app.route('/admin', endpoint="admin")
+def admin():
+    if session.get("admin"):
+        return render_template('admin.html')
+    else:
+        return redirect('/admin-login')
+
+@app.route('/announcements')
+def admin_announce():
+    with sqlite3.connect("school.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM announcements WHERE NOT announcement_title ='' and announcement_id IS NOT NULL")
+        output=cursor.fetchall()
+    return render_template('announcements.html', output=output)
 
 
-# @app.route('/upload', methods=['POST'])
-# def upload_file():
-#     if 'file' not in request.files:
-#         return render_template('image-upload.html')
-#     file = request.files['file']
-#     if file.filename == '':
-#         return render_template('image-upload.html')
-#     if file:
-#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'trueocr.png'))
-#         return redirect('/image-to-video')
+@app.route('/admin/sql', methods=['GET', 'POST'], endpoint="admin-sql")
+def admin_sql():
+    output=None
+    if session.get("admin"):
+        if request.method == 'POST':
+            try:
+                with sqlite3.connect("school.db") as conn:
+                    cursor = conn.cursor()
+                    query=request.form["query"]
+                    cursor.execute(query)
+                    output=cursor.fetchall()
+            except:
+                output="Error!"
+        return render_template('admin_sql.html', output=output)
+    else:
+        return redirect('/admin-login')
     
-# @app.route('/image-upload')
-# def image_upload():
-#     return render_template('image-upload.html')
+@app.route('/admin/announce', methods=['GET', 'POST'], endpoint="admin-announce")
+def admin_announce():
+    if session.get("admin"):
+        if request.method == 'POST':
+            try:
+                print("lablablablablablablablab")
+                with sqlite3.connect("school.db") as conn:
+                    cursor = conn.cursor()
+                    announcement_title=request.form["title"]
+                    announcement_text=request.form["announcement"]
+                    announcer=request.form["announcer"]
+                    if announcer=="":
+                        announcer="Principal"
+                    query = f"INSERT INTO announcements (announcement_id, announcement_title, announcement_text, announcer) VALUES((SELECT MAX(announcement_id) FROM announcements)+1, '{announcement_title}', '{announcement_text}', '{announcer}')"
+                    # query = f"INSERT INTO announcements (announcement_id, announcement_title, announcement_text, announcer) VALUES(1, '{announcement_title}', '{announcement_text}', {announcer})"
+                
+                    print(query)
+                    cursor.execute(query)   
+                        
+            except ZeroDivisionError:
+                output="Error!"   
+        return render_template('admin_announce.html')
+    else:
+        return redirect('/admin-login')
 
-# @app.route('/image-to-video')
-# def image_to_video():
-#     return render_template('image-to-video.html')
+@app.route('/admin-login', methods=['GET', 'POST'], endpoint="admin-login")
+def admin_login():
+    error = None
+    session["admin"]=False
+    if request.method == 'POST':
+        with open("./misc/admin_id.bin", "rb") as f:
+            admin_login_dict = pickle.load(f)
+        if request.form['username'] != admin_login_dict["id"] or request.form['password'] != admin_login_dict["password"]:
+            print(session["admin"])
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            session["admin"]=True
+            return redirect(url_for('admin'))
+    return render_template('admin_login.html', error=error)
 
 if __name__ == "__main__":
+    # from waitress import serve
+    # serve(app, host="0.0.0.0", port=8080)
     app.run(debug=True)       
 

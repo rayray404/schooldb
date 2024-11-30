@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Announcements</title>
+{% endblock %}
+
+{% block body %}
+<br>
+
+<div class="jumbotron">
+    <div class="col-sm-8 mx-auto">
+        <h1>Announcements</h1>
+        <div class="table-container">
+            {% for row in output %}
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                <h5 class="card-title">{{row[1]}}</h5>
+                <p class="card-text">{{row[2]}}</p>
+                <p class="card-text"><i>Announcer: {{row[3]}}</i></p>
+                <p class="card-text"><i>Date: {{row[4]}}</i></p>
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

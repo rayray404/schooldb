@@ -6,9 +6,20 @@
 
 {% block body %}
 <br>
+<nav class="navbar navbar-dark bg-dark">
+    <a class="btn btn-primary" href="/admin" role="button">Admin&raquo;</a><br><br><br>
+    <a class="btn btn-light" href="/admin/sql" role="button">SQL&raquo;</a>
+    <a class="btn btn-light" href="/admin/announce" role="button">Announce&raquo;</a>
+</nav>
 <div class="jumbotron">
-    <div class="col-sm-8 mx-auto">
-        
-    </div>
+    
+    {% block feature %}<h1>Admin Portal</h1>
+    <p>This is the admin portal. There's buttons above for features</p>
+    <ul>
+        <li><a href="/admin/sql">SQL Portal</a></li>
+        <li><a href="/admin/announce">Announcement Creator</a></li>
+
+    </ul> {% endblock %}
+    
 </div>
 {% endblock %}

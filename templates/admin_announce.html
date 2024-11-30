@@ -1,0 +1,22 @@
+{% extends 'admin.html' %}
+
+{% block head %}
+<title>Admin: Announcement Creator</title>
+{% endblock %}
+
+{% block feature %}
+<div class="col-sm-8 mx-auto">
+    <h1>Announcement Creator</h1>
+    <br>
+    <form action="" method="post">
+        <input type="text" class="form-control" placeholder="Title" name="title" value="{{
+        request.form.title }}"><br>
+        <textarea type="text" class="form-control" rows=3 id="exampleFormControlTextarea1" placeholder="Announcement" name="announcement" value="{{
+        request.form.announcement }}"></textarea><br>
+        <input type="text" class="form-control" placeholder="Announcer" name="announcer" value="{{
+          request.form.announcer }}">
+        <br>
+        <input class="btn btn-success" type="submit" value="Announce">
+    </form>
+</div>
+{% endblock %} 
