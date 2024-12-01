@@ -1,0 +1,38 @@
+{% extends 'student.html' %}
+
+{% block head %}
+<title>Student: Marks Portal</title>
+{% endblock %}
+
+{% block feature %}
+<div class="col-sm-8 mx-auto">
+    <h1>Marks Portal</h1>
+    <br>
+    {% if student_marks_dict %}
+      {% for row in student_marks_dict.items() %}
+      <div class="table-container">
+        <div class="card" style="width: 100%;">
+            <div class="card-body">
+            <h5 class="card-title">{{row[0]}}</h5>
+            <table>
+              <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Percentage</th>
+              </tr>
+              {% for subject in row[1] %}
+              <tr>
+                <td>{{subject[0]}}</td>
+                <td>{{subject[1]}}/{{subject[2]}}</td>
+                <td>{{subject[1]/subject[2]*100}}%</td>
+              </tr>
+              {% endfor %}
+            </table>
+            </div>
+        </div>
+        <br>
+      </div>
+      {% endfor %}
+    {% endif %}
+</div>
+{% endblock %} 

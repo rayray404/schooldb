@@ -89,6 +89,27 @@ def student_hw():
     else:
         return redirect('/student-login')
     
+@app.route('/student/marks', methods=['GET', 'POST'], endpoint="student-marks")
+def student_marks():
+    if session.get("student"):
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query=f"SELECT exam_type, subject, marks, total FROM marks WHERE s_id = {session.get("student")}"    
+            cursor.execute(query)
+            student_marks = cursor.fetchall()
+            print(student_marks)
+            student_marks_dict=dict()
+            for i in student_marks:
+                if i[0] not in student_marks_dict:
+                    student_marks_dict[i[0]]=[list(i[1:])]
+                else:
+                    student_marks_dict[i[0]]=student_marks_dict[i[0]]+[list(i[1:])]
+            print(student_marks_dict)
+        return render_template('student_marks.html', student_marks_dict=student_marks_dict)
+    else:
+        return redirect('/student-login')
+    
+
 @app.route('/student/attendance', methods=['GET', 'POST'], endpoint="student-attendance")
 def student_attendance():
     if session.get("student"):
@@ -154,11 +175,66 @@ def teacher_hw():
     
     else:
         return redirect('/teacher-login')
-    
+
+@app.route('/teacher/marks', methods=['GET', 'POST'], endpoint="teacher-marks")
+def teacher_marks():
+    exam_options=["Unit Test", "Mid Term", "Pre-Boards", "Finals"]
+    if session.get("teacher"):
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            # print(request.form.get("title"))
+            student_id, subject, marks, total, exam_type = request.form.get("s_id"), request.form.get("subject"), request.form.get("marks"), request.form.get("total"), request.form.get("type")
+            query="SELECT s_id, subject, exam_type FROM marks"
+            cursor.execute(query)
+            if student_id and subject and marks and total and exam_type:
+                student_id, marks, total =int(student_id), int(marks), int(total)
+                x=cursor.fetchone()
+                if x==(student_id, subject, exam_type):
+                    query=f"UPDATE marks SET marks={marks}, total={total} WHERE s_id={student_id} AND subject='{subject}' AND exam_type='{exam_type}' "
+                else:
+                    query=f"INSERT INTO marks (s_id, subject, marks, total, exam_type) VALUES ({student_id}, '{subject}', {marks}, {total}, '{exam_type}')"
+                cursor.execute(query)
+        return render_template('teacher_marks.html', exam_options=exam_options)
+    else:
+        return redirect('/teacher-login')
+
+ 
 @app.route('/teacher/attendance', methods=['GET', 'POST'], endpoint="teacher-attendance")
 def teacher_attendance():
+    date_received=homeroom=False
+    teacher_class=None
+    student_list=[]
     if session.get("teacher"):
-        return render_template('teacher_attendance.html')
+
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            cursor.execute(f"SELECT homeroom, class FROM teacher where t_id={session.get("teacher")}")
+            data=cursor.fetchone()
+            print(data)
+            homeroom=bool(data[0])
+            teacher_class=data[1]
+        if homeroom:
+            cursor=conn.cursor()
+            date_received=request.form.get("date")
+            if date_received:
+                with sqlite3.connect("school.db") as conn:
+                    query=f"SELECT s_id, name FROM student WHERE class=(SELECT class FROM teacher WHERE t_id={session.get("teacher")})"
+                    cursor=conn.cursor()
+                    cursor.execute(query)
+                    student_list=cursor.fetchall()
+                print(request.form.getlist('present'))
+                print(request.form.getlist('id'))
+                # print(amounts, item_ids)
+                print("La")
+                # for item_id, idx in enumerate(item_ids):
+                #     print(False)
+                #     amount = amounts[idx]
+                #     print(item_id, amount)
+                    # do something with item_id and amount
+                    # cursor.execute(query)
+                    # attendance=query
+
+        return render_template('teacher_attendance.html', student_list=student_list, teacher_class=teacher_class, homeroom=homeroom, date_received=date_received)
     else:
         return redirect('/teacher-login')
 

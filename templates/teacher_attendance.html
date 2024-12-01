@@ -1,21 +1,52 @@
 {% extends 'teacher.html' %}
 
 {% block head %}
-<title>Teacher: Homework Portal</title>
+<title>Teacher: Attendance Logger</title>
 {% endblock %}
 
 {% block feature %}
 <div class="col-sm-8 mx-auto">
-    <h1>Homework Portal</h1>
+    <h1>Attendance Logger</h1>
     <br>
-    <form action="" method="post">
-        <textarea type="text" class="form-control" rows=3 id="exampleFormControlTextarea1" placeholder="SQL Query" name="query" value="{{
-        request.form.query }}"></textarea>
+    {% if homeroom %}
+    <p>{{teacher_class}} Attendance</p>
+      {% if date_received %}
+      <form action="" method="post">
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Present</th>
+        </tr>
+        
+      {% for row in student_list %}
+        <tr>
+          <td>{{ row[1] }}</td>
+          <td>
+            <div class="form-group">
+              {{row[0]}}
+              <input type="checkbox" name="present"  value="1">
+              <input type="hidden" name="id" value="1">
+          </div>
+          </td>
+        </tr>
+      {% endfor %}
+      
+      </table>
+      <input class="btn btn-success" type="submit" value="Submit">
+      </form>
+      {% else %}
+      <form action="" method="post">
+        <input type="date" class="form-control" placeholder="Date" name="date" value="{{
+          request.form.date }}">
+        <input class="btn btn-success" type="submit" value="Set">
+      </form>
         <br>
-        <input class="btn btn-success" type="submit" value="Run!">
-        {% if output %}
-      <p class="error"><strong>Output:</strong><br> {{ output }}
-        {% endif %}
-    </form>
+      {% endif %}
+      
+    {% else %}
+    You are not assigned as the <b>Homeroom</b> for any class. If there is any problem, contact <a href="/contact">admin</a>.
+    {% endif %}
+
+    
 </div>
 {% endblock %} 

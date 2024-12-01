@@ -1,0 +1,50 @@
+{% extends 'teacher.html' %}
+
+{% block head %}
+<title>Teacher: Marks Portal</title>
+{% endblock %}
+
+{% block feature %}
+<div class="col-sm-8 mx-auto">
+    <h1>Marks Portal</h1>
+    <br>
+    <form action="" method="post">
+      <input type="text" class="form-control" placeholder="Student ID" name="s_id" value="{{
+      request.form.s_id }}">
+      <br>
+
+      <input type="text" class="form-control" placeholder="Subject" name="subject" value="{{
+        request.form.subject }}">
+      <br>
+      <input type="text" class="form-control" placeholder="Marks" name="marks" value="{{
+        request.form.marks }}">
+      <br>
+      <input type="text" class="form-control" placeholder="Total" name="total" value="{{
+        request.form.total }}">
+      <br>
+      <select name="type" class="Input">
+        {% for option in exam_options %}
+        <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+        </select>
+      <br><br>
+      <input class="btn btn-success" type="submit" value="Run!">
+      
+  </form>
+    {% if teacher_hw %}
+      {% for row in teacher_hw %}
+      <div class="card" style="width: 100%;">
+          <div class="card-body">
+          <h4 class="card-title">{{row[0]}}</h5>
+          <p class="card-text"><b>{{row[1]}}</b></p>
+          <p class="card-text"><i>Posted: {{row[2]}} | Due by: {{row[3]}}</i></p>
+          <p class="card-text"><i>Subject: {{row[4]}}, {{row[5]}}</i></p>
+          <p class="card-text"><i></i></p>
+          </div>
+      </div>
+      <br>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %} 

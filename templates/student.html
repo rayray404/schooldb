@@ -10,6 +10,7 @@
     <a class="btn btn-primary" href="/student" role="button">Home&raquo;</a><br><br><br>
     <a class="btn btn-light" href="/student/hw" role="button">Homework&raquo;</a>
     <a class="btn btn-light" href="/student/attendance" role="button">Attendance&raquo;</a>
+    <a class="btn btn-light" href="/student/marks" role="button">Marks&raquo;</a>
     <a class="btn btn-light" href="/student/details" role="button">Details&raquo;</a>
 </nav>
 <div class="jumbotron">
@@ -17,9 +18,10 @@
     {% block feature %}<h1>Student Portal</h1>
     <p>This is the student portal. There's buttons above for features</p>
     <ul>
-        <li><a href="/teacher/hw">Homework Page</a></li>
-        <li><a href="/teacher/attendance">Attendance Log</a></li>
-        <li><a href="/teacher/details">View Personal Details</a>(no edit option available; request <a href="contact">admin</a>)</li>
+        <li><a href="/student/hw">Homework Page</a></li>
+        <li><a href="/student/attendance">Attendance Log</a></li>
+        <li><a href="/student/marks">Marks View</a></li>
+        <li><a href="/student/details">View Personal Details</a>(no edit option available; request <a href="contact">admin</a>)</li>
 
     </ul> {% endblock %}
     
