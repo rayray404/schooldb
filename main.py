@@ -268,7 +268,7 @@ def admin_sql():
                     print(query)
                     cursor.execute(query)
                     output=cursor.fetchall()
-            except ZeroDivisionError:
+            except:
                 output="Error!"
         return render_template('admin_sql.html', output=output)
     else:
@@ -293,7 +293,7 @@ def admin_announce():
                     print(query)
                     cursor.execute(query)   
                         
-            except ZeroDivisionError:
+            except:
                 output="Error!"   
         return render_template('admin_announce.html')
     else:
