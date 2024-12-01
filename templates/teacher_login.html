@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Teacher Login</title>
+{% endblock %}
+
+{% block body %}
+<br>
+<div class="jumbotron">
+  <div class="col-sm-8 mx-auto">
+    <h1>Teacher Login</h1>
+    <p>Login: admin, Password: admin</p>
+    <br>
+    <form action="" method="post">
+      <input type="text" class="form-control" placeholder="Username" name="username" value="{{
+        request.form.username }}">
+        <br>
+       <input type="password" class="form-control" placeholder="Password" name="password" value="{{
+        request.form.password }}">
+        <br>
+      <input class="btn btn-success" type="submit" value="Login">
+    </form>
+    {% if error %}
+      <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

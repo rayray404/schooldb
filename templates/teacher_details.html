@@ -1,0 +1,21 @@
+{% extends 'teacher.html' %}
+
+{% block head %}
+<title>Teacher: Homework Portal</title>
+{% endblock %}
+
+{% block feature %}
+<div class="col-sm-8 mx-auto">
+    <h1>Homework Portal</h1>
+    <br>
+    <form action="" method="post">
+        <textarea type="text" class="form-control" rows=3 id="exampleFormControlTextarea1" placeholder="SQL Query" name="query" value="{{
+        request.form.query }}"></textarea>
+        <br>
+        <input class="btn btn-success" type="submit" value="Run!">
+        {% if output %}
+      <p class="error"><strong>Output:</strong><br> {{ output }}
+        {% endif %}
+    </form>
+</div>
+{% endblock %} 

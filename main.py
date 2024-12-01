@@ -42,9 +42,54 @@ def contact():
 def student():
     return render_template('student.html')
 
-@app.route('/teacher')
+@app.route('/teacher', endpoint="teacher")
 def teacher():
-    return render_template('teacher.html')
+    if session.get("teacher"):
+        return render_template('teacher.html')
+    else:
+        return redirect('/teacher-login')
+
+@app.route('/teacher-login', methods=['GET', 'POST'], endpoint="teacher-login")
+def teacher_login():
+    error = None
+    session["teacher"]=None
+    if request.method == 'POST':
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query="SELECT t_id, password FROM teacher"
+            cursor.execute(query)
+            teacher_login_dict=dict(cursor.fetchall())
+        username, password = int(request.form["username"]), request.form["password"]
+        if username not in teacher_login_dict:
+            error = 'Invalid Username. Please try again.'
+        elif password != teacher_login_dict[username]:
+            error = 'Incorrect Password. Please try again.'
+        else:
+            session["teacher"]=username
+            return redirect(url_for('teacher'))
+    return render_template('teacher_login.html', error=error)
+
+@app.route('/teacher/details', methods=['GET', 'POST'], endpoint="teacher-details")
+def teacher_details():
+    if session.get("teacher"):
+        return render_template('teacher_details.html')
+    else:
+        return redirect('/teacher-login')
+    
+@app.route('/teacher/hw', methods=['GET', 'POST'], endpoint="teacher-hw")
+def teacher_hw():
+    if session.get("teacher"):
+        return render_template('teacher_hw.html')
+    else:
+        return redirect('/teacher-login')
+    
+@app.route('/teacher/attendance', methods=['GET', 'POST'], endpoint="teacher-attendance")
+def teacher_attendance():
+    if session.get("teacher"):
+        return render_template('teacher_attendance.html')
+    else:
+        return redirect('/teacher-login')
+
 
 @app.route('/admin', endpoint="admin")
 def admin():
@@ -52,6 +97,7 @@ def admin():
         return render_template('admin.html')
     else:
         return redirect('/admin-login')
+
 
 @app.route('/announcements')
 def admin_announce():
@@ -71,9 +117,10 @@ def admin_sql():
                 with sqlite3.connect("school.db") as conn:
                     cursor = conn.cursor()
                     query=request.form["query"]
+                    print(query)
                     cursor.execute(query)
                     output=cursor.fetchall()
-            except:
+            except ZeroDivisionError:
                 output="Error!"
         return render_template('admin_sql.html', output=output)
     else:
@@ -120,7 +167,7 @@ def admin_login():
     return render_template('admin_login.html', error=error)
 
 if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
+    # from waitress import serve
+    # serve(app, host="0.0.0.0", port=8080)
     app.run(debug=True)       
 

@@ -6,10 +6,22 @@
 
 {% block body %}
 <br>
+<nav class="navbar navbar-dark bg-dark">
+    <a class="btn btn-primary" href="/teachers" role="button">Home&raquo;</a><br><br><br>
+    <a class="btn btn-light" href="/teacher/hw" role="button">Homework&raquo;</a>
+    <a class="btn btn-light" href="/teacher/attendance" role="button">Attendance&raquo;</a>
+    <a class="btn btn-light" href="/teacher/details" role="button">Details&raquo;</a>
+</nav>
 <div class="jumbotron">
-    <div class="col-sm-8 mx-auto">
-        <h1>Teacher</h1>
-    </div>
-</div>
+    
+    {% block feature %}<h1>Teacher Portal</h1>
+    <p>This is the teacher portal. There's buttons above for features</p>
+    <ul>
+        <li><a href="/teacher/hw">Homework Page</a></li>
+        <li><a href="/teacher/attendance">Attendance Log</a></li>
+        <li><a href="/teacher/details">View Personal Details</a>(no edit option available; request <a href="contact">admin</a>)</li>
 
+    </ul> {% endblock %}
+    
+</div>
 {% endblock %}
