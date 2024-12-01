@@ -8,12 +8,7 @@ with sqlite3.connect("school.db") as conn:
     #                 drop table announcements            
     #                 """)
     cursor.execute("""
-                    CREATE TABLE announcements (announcement_id int auto_increment primary key,
-                   announcement_title text default "",
-                   announcement_text text default "",
-                   announcer text default "Principal",
-                   announce_date date default current_date)                
-                    """)
+                    ALTER TABLE student ADD COLUMN class TEXT""")
     print(cursor.fetchall())
 
 

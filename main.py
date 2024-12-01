@@ -38,9 +38,64 @@ def times():
 def contact():
     return render_template('contact.html')
 
-@app.route('/student')
+@app.route('/student', endpoint="student")
 def student():
-    return render_template('student.html')
+    if session.get("student"):
+        return render_template('student.html')
+    else:
+        return redirect('/student-login')
+
+@app.route('/student-login', methods=['GET', 'POST'], endpoint="student-login")
+def student_login():
+    error = None
+    session["student"]=None
+    if request.method == 'POST':
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query="SELECT s_id, password FROM student"
+            cursor.execute(query)
+            student_login_dict=dict(cursor.fetchall())
+        username, password = int(request.form["username"]), request.form["password"]
+        if username not in student_login_dict:
+            error = 'Invalid Username. Please try again.'
+        elif password != student_login_dict[username]:
+            error = 'Incorrect Password. Please try again.'
+        else:
+            session["student"]=username
+            return redirect(url_for('student'))
+    return render_template('student_login.html', error=error)
+
+@app.route('/student/details', methods=['GET', 'POST'], endpoint="student-details")
+def student_details():
+    if session.get("student"):
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query=f"SELECT s_id, name, class, dob, email FROM student WHERE s_id= {session.get("student")}"
+            cursor.execute(query)
+            student_details_query = cursor.fetchall()
+        return render_template('student_details.html', student_details=student_details_query)
+    else:
+        return redirect('/student-login')
+    
+@app.route('/student/hw', methods=['GET', 'POST'], endpoint="student-hw")
+def student_hw():
+    if session.get("student"):
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query=f"SELECT l.hw_title, l.hw_text, l.post_date, l.due_date, l.subject, l.class, r.t_id, name FROM homework l INNER JOIN teacher r ON l.t_id= r.t_id WHERE l.class=(SELECT class FROM student WHERE s_id = {session.get("student")})"    
+            cursor.execute(query)
+            student_hw = cursor.fetchall()
+        return render_template('student_hw.html', student_hw=student_hw)
+    else:
+        return redirect('/student-login')
+    
+@app.route('/student/attendance', methods=['GET', 'POST'], endpoint="student-attendance")
+def student_attendance():
+    if session.get("student"):
+        return render_template('student_attendance.html')
+    else:
+        return redirect('/student-login')
+
 
 @app.route('/teacher', endpoint="teacher")
 def teacher():
@@ -72,14 +127,31 @@ def teacher_login():
 @app.route('/teacher/details', methods=['GET', 'POST'], endpoint="teacher-details")
 def teacher_details():
     if session.get("teacher"):
-        return render_template('teacher_details.html')
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            query=f"SELECT t_id, name, subject, class, email FROM teacher WHERE t_id= {session.get("teacher")}"
+            cursor.execute(query)
+            teacher_details_query = cursor.fetchall()
+        return render_template('teacher_details.html', teacher_details=teacher_details_query)
     else:
         return redirect('/teacher-login')
     
 @app.route('/teacher/hw', methods=['GET', 'POST'], endpoint="teacher-hw")
 def teacher_hw():
     if session.get("teacher"):
-        return render_template('teacher_hw.html')
+        with sqlite3.connect("school.db") as conn:
+            cursor=conn.cursor()
+            # print(request.form.get("title"))
+            hw_title, hw_text, due_date, hw_subject, hw_class = request.form.get("title"), request.form.get("text"), request.form.get("date"), request.form.get("subject"), request.form.get("class")
+            if hw_title and hw_class:
+                query=f"INSERT INTO homework (hw_title, hw_text, due_date, subject, class, t_id) VALUES ('{hw_title}', '{hw_text}', '{due_date}', '{hw_subject}', '{hw_class}', {session.get("teacher")})"
+                cursor.execute(query)
+                conn.commit()
+            query=f"SELECT hw_title, hw_text, post_date, due_date, subject, class FROM homework WHERE t_id={session.get("teacher")}"    
+            cursor.execute(query)
+            teacher_hw = cursor.fetchall()
+        return render_template('teacher_hw.html', teacher_hw=teacher_hw)
+    
     else:
         return redirect('/teacher-login')
     

@@ -9,13 +9,38 @@
     <h1>Homework Portal</h1>
     <br>
     <form action="" method="post">
-        <textarea type="text" class="form-control" rows=3 id="exampleFormControlTextarea1" placeholder="SQL Query" name="query" value="{{
-        request.form.query }}"></textarea>
+      <input type="text" class="form-control" placeholder="Title" name="title" value="{{
+      request.form.title }}">
+      <br>
+      <textarea type="text" class="form-control" rows=3 id="exampleFormControlTextarea1" placeholder="Homework Text" name="text" value="{{
+        request.form.text }}"></textarea>
         <br>
-        <input class="btn btn-success" type="submit" value="Run!">
-        {% if output %}
-      <p class="error"><strong>Output:</strong><br> {{ output }}
-        {% endif %}
-    </form>
+      <input type="date" class="form-control" placeholder="Date" name="date" value="{{
+        request.form.date }}">
+      <br>
+      <input type="text" class="form-control" placeholder="Subject" name="subject" value="{{
+        request.form.subject }}">
+      <br>
+      <input type="text" class="form-control" placeholder="Class" name="class" value="{{
+        request.form.class }}">
+      <br>
+      <input class="btn btn-success" type="submit" value="Run!">
+      
+  </form>
+    {% if teacher_hw %}
+      {% for row in teacher_hw %}
+      <div class="card" style="width: 100%;">
+          <div class="card-body">
+          <h4 class="card-title">{{row[0]}}</h5>
+          <p class="card-text"><b>{{row[1]}}</b></p>
+          <p class="card-text"><i>Posted: {{row[2]}} | Due by: {{row[3]}}</i></p>
+          <p class="card-text"><i>Subject: {{row[4]}}, {{row[5]}}</i></p>
+          <p class="card-text"><i></i></p>
+          </div>
+      </div>
+      <br>
+      {% endfor %}
+    {% endif %}
+  </div>
 </div>
 {% endblock %} 

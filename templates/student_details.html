@@ -1,12 +1,12 @@
-{% extends 'teacher.html' %}
+{% extends 'student.html' %}
 
 {% block head %}
-<title>Teacher: Personal Details</title>
+<title>Student: Personal Details</title>
 {% endblock %}
 
 {% block feature %}
 <div class="col-sm-8 mx-auto">
-    <h1>Teacher Personal Details</h1>
+    <h1>Student Personal Details</h1>
     <br>
     <div class="table-container">
       <table>
@@ -16,23 +16,23 @@
           </tr>
           <tr>
               <td>ID</td>
-              <td>{{ teacher_details[0][0] }}</td>
+              <td>{{ student_details[0][0] }}</td>
           </tr>
           <tr>
             <td>Name</td>
-            <td>{{ teacher_details[0][1] }}</td>
-          </tr>
-          <tr>
-            <td>Subject</td>
-            <td>{{ teacher_details[0][2] }}</td>
+            <td>{{ student_details[0][1] }}</td>
           </tr>
           <tr>
             <td>Class</td>
-            <td>{{ teacher_details[0][3] }}</td>
+            <td>{{ student_details[0][2] }}</td>
+          </tr>
+          <tr>
+            <td>Date of Birth</td>
+            <td>{{ student_details[0][3] }}</td>
           </tr>
           <tr>
             <td>Email</td>
-            <td>{{ teacher_details[0][4] }}</td>
+            <td>{{ student_details[0][4] }}</td>
           </tr>
 
       </table>
