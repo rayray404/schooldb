@@ -110,13 +110,6 @@ def student_marks():
         return redirect('/student-login')
     
 
-@app.route('/student/attendance', methods=['GET', 'POST'], endpoint="student-attendance")
-def student_attendance():
-    if session.get("student"):
-        return render_template('student_attendance.html')
-    else:
-        return redirect('/student-login')
-
 
 @app.route('/teacher', endpoint="teacher")
 def teacher():
@@ -197,47 +190,6 @@ def teacher_marks():
         return render_template('teacher_marks.html', exam_options=exam_options)
     else:
         return redirect('/teacher-login')
-
- 
-@app.route('/teacher/attendance', methods=['GET', 'POST'], endpoint="teacher-attendance")
-def teacher_attendance():
-    date_received=homeroom=False
-    teacher_class=None
-    student_list=[]
-    if session.get("teacher"):
-
-        with sqlite3.connect("school.db") as conn:
-            cursor=conn.cursor()
-            cursor.execute(f"SELECT homeroom, class FROM teacher where t_id={session.get("teacher")}")
-            data=cursor.fetchone()
-            print(data)
-            homeroom=bool(data[0])
-            teacher_class=data[1]
-        if homeroom:
-            cursor=conn.cursor()
-            date_received=request.form.get("date")
-            if date_received:
-                with sqlite3.connect("school.db") as conn:
-                    query=f"SELECT s_id, name FROM student WHERE class=(SELECT class FROM teacher WHERE t_id={session.get("teacher")})"
-                    cursor=conn.cursor()
-                    cursor.execute(query)
-                    student_list=cursor.fetchall()
-                print(request.form.getlist('present'))
-                print(request.form.getlist('id'))
-                # print(amounts, item_ids)
-                print("La")
-                # for item_id, idx in enumerate(item_ids):
-                #     print(False)
-                #     amount = amounts[idx]
-                #     print(item_id, amount)
-                    # do something with item_id and amount
-                    # cursor.execute(query)
-                    # attendance=query
-
-        return render_template('teacher_attendance.html', student_list=student_list, teacher_class=teacher_class, homeroom=homeroom, date_received=date_received)
-    else:
-        return redirect('/teacher-login')
-
 
 @app.route('/admin', endpoint="admin")
 def admin():
