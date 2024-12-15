@@ -7,8 +7,7 @@ with sqlite3.connect("school.db") as conn:
     # cursor.execute("""
     #                 drop table announcements            
     #                 """)
-    cursor.execute("""
-                    ALTER TABLE student ADD COLUMN class TEXT""")
+    cursor.execute(""" delete from marks""")
     print(cursor.fetchall())
 
 
